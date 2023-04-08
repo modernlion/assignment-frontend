@@ -4,37 +4,47 @@ import { useNavigate } from 'react-router-dom'
 import { fetchAuthToken, fetchUserNonce } from '@/apis/api'
 import { setLocalStorage } from '@/apis/localStorage'
 import { Button } from '@/components/design'
-import { PATHNAME } from '@/constants/index'
 import { getAddress, signing } from '@/interface/metamask'
 
 const LoginForm = () => {
   const navigate = useNavigate()
   const [userWalletAddr, setUserWalletAddr] = useState<string>('')
-  const [nonce, setNonce] = useState<string>('')
 
-  const onClickConnect = async () => {
+  const connectToWallet = async () => {
     const address = await getAddress()
     setUserWalletAddr(address)
   }
 
   const getNonce = useCallback(async () => {
-    await fetchUserNonce({
+    const { nonce } = await fetchUserNonce({
       publicAddress: userWalletAddr,
-    }).then(data => {
-      console.log(data)
-      const { nonce } = data
-      setNonce(nonce)
     })
+    return nonce
   }, [userWalletAddr])
 
-  const signNonce = useCallback(async () => {
+  const sign = useCallback(async (nonce: string) => {
     const signature = await signing(nonce)
-    const autoToken = await fetchAuthToken({
+    return signature
+  }, [])
+
+  const getAuthToken = useCallback(async (userWalletAddr: string, signature: string) => {
+    const { data } = await fetchAuthToken({
       publicAddress: userWalletAddr,
       signature,
     })
-    setLocalStorage('token', autoToken)
-  }, [userWalletAddr, nonce])
+    const authToken = data.access_token
+    return authToken
+  }, [])
+
+  const login = useCallback(async () => {
+    // auth token API가 nonce와 signature를 받지 않고 publicAddr과 signature 받는 것 같습니다.
+    const nonce = await getNonce()
+    const signature = await sign(nonce)
+    const authToken = await getAuthToken(userWalletAddr, signature)
+    console.log(authToken)
+    setLocalStorage('token', authToken)
+    // navigate(PATHNAME.NFTS)
+  }, [userWalletAddr])
 
   return (
     <div className="block w-2/4 h-3/5 p-4 rounded-md border-bgQuarternary bg-gray-600 border border-solid">
@@ -48,20 +58,10 @@ const LoginForm = () => {
             text="Connect"
             size="sm"
             theme="Filled"
-            onClick={onClickConnect}
+            onClick={connectToWallet}
           />
-          <div className="w-full h-12 border-b-2 border-solid border-gray-300 pb-2 mb-4">
-            {nonce}
-          </div>
-          <Button className="h-8" text="Nonce" size="sm" theme="Filled" onClick={getNonce} />
-          <Button className="h-8" text="Sign" size="sm" theme="Filled" onClick={signNonce} />
         </div>
-        <Button
-          className="w-full h-10"
-          text="Login"
-          size="sm"
-          onClick={() => navigate(PATHNAME.NFTS)}
-        />
+        <Button className="w-full h-10" text="Login" size="sm" onClick={() => login()} />
       </div>
     </div>
   )

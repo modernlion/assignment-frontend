@@ -45,4 +45,55 @@ const signing = async (msg: string) => {
   }
 }
 
-export { getAddress, signing }
+const encodeTransferFrom = async (
+  contractAddress: string,
+  recipientAddress: string,
+  tokenId: number,
+) => {
+  const transferFrom = {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'from',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+    ],
+    name: 'transferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }
+  if (ethereum) {
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, [transferFrom], signer)
+    const tx = await contract.transferFrom(await signer.getAddress(), recipientAddress, tokenId)
+    console.log(tx)
+    return tx
+  }
+}
+
+const metamaskSendTransaction = async (rawTx: any) => {
+  if (ethereum) {
+    const _ethereum = ethereum as any
+    console.log('a')
+    const txResult = await _ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [rawTx],
+      id: 1234,
+    })
+    return txResult
+  }
+}
+
+export { encodeTransferFrom, getAddress, metamaskSendTransaction, signing }

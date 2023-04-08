@@ -31,4 +31,13 @@ const fetchAuthToken = async (params: { publicAddress: string; signature: string
   return rsp
 }
 
-export { fetchAuthToken, fetchUserNonce }
+const fetchMyTokens = async () => {
+  const rsp = await fetchData({
+    domain: `${DOMAIN}/${PATH.users.nfts}`,
+    method: 'GET',
+    auth: true,
+  })
+  return rsp
+}
+
+export { fetchAuthToken, fetchMyTokens, fetchUserNonce }

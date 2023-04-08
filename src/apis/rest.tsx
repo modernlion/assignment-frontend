@@ -3,12 +3,18 @@ import { getLocalStorage } from '@/apis/localStorage'
 type RestFulAPIType = {
   domain: string
   method: 'GET' | 'POST'
-  queryParams?: string
   params?: any
+  auth?: boolean
   delay?: number
 }
 
-const fetchData = async ({ domain, method, params, delay = 5000 }: RestFulAPIType) => {
+const fetchData = async ({
+  domain,
+  method,
+  params,
+  auth = false,
+  delay = 5000,
+}: RestFulAPIType) => {
   const controller = new AbortController()
   const timerId = setTimeout(() => controller.abort(), delay)
   let qs = ''
@@ -21,19 +27,29 @@ const fetchData = async ({ domain, method, params, delay = 5000 }: RestFulAPITyp
   }
 
   if (method === 'POST') {
-    const autoToken = getLocalStorage('token')
     body = {
       body: JSON.stringify(params),
     }
     headers = {
       ...headers,
-      Authorization: `Bearer ${autoToken}`,
+    }
+  }
+  if (auth) {
+    const authToken = getLocalStorage('token')
+    console.log(authToken)
+    headers = {
+      ...headers,
+      Authorization: `Bearer ${authToken}`,
     }
   }
 
+  console.log(method, headers)
+
   const rsp = await fetch(`${domain}${qs}`, {
     method,
-    ...headers,
+    headers: {
+      ...headers,
+    },
     ...body,
     redirect: 'follow',
     signal: controller.signal,

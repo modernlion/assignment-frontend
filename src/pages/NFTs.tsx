@@ -1,26 +1,52 @@
-import { Button, Input, List } from '@/components/design'
+import { useQuery } from '@tanstack/react-query'
+import { useCallback, useState } from 'react'
+
+import { fetchMyTokens } from '@/apis/api'
+import { List } from '@/components/design'
+import { TransferForm } from '@/components/NFTs'
+import { Item, TokenInfo } from '@/constants/types'
+import { protocolReplacer } from '@/shared/utils'
 
 const NFTs = () => {
-  const func = (e: any) => {
-    console.log(e)
-  }
+  const { isLoading, data } = useQuery({
+    queryKey: ['tokens'],
+    queryFn: fetchMyTokens,
+  })
+
+  const [selectedItem, selectItem] = useState<Item>()
+
+  const rawData: TokenInfo[] = data?.data.ownedNfts
+  const nfts: Item[] = rawData?.map(el => {
+    const { metadata, title, tokenId, contract } = el
+    const contractAddress = contract?.address
+    const name = metadata?.name ? metadata.name : ''
+    const image = metadata?.image ? metadata.image : ''
+    const img = protocolReplacer(image)
+    return {
+      name,
+      img,
+      title,
+      tokenId,
+      contractAddress,
+    }
+  })
+
+  const onSelectItem = useCallback((item: Item) => {
+    selectItem(item)
+  }, [])
+
   return (
     <div className="flex justify-center items-center w-screen h-screen">
       <div className="flex w-3/5 h-3/5 rounded-md border-bgQuarternary border-solid border p-4">
-        <div className="w-80 rounded-md bg-neutral-800">
-          <List list={[]} />
+        <div className="w-80 rounded-md bg-neutral-800 overflow-scroll">
+          <List
+            isLoading={isLoading}
+            list={nfts}
+            onSelect={onSelectItem}
+            selectedItem={selectedItem}
+          />
         </div>
-        <div className="w-[calc(100%-320px)] h-full ml-4">
-          <div className="relative flex flex-col items-center w-full h-full pt-20">
-            <div className="w-full h-12">
-              <Input value="Value" handleOnChange={func} />
-            </div>
-
-            <div className="absolute flex justify-center w-full bottom-0 text-center">
-              <Button text="Send" />
-            </div>
-          </div>
-        </div>
+        <TransferForm selectedItem={selectedItem} />
       </div>
     </div>
   )
