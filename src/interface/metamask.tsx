@@ -2,6 +2,10 @@ import { ethers } from 'ethers'
 const ethereum = window.ethereum
 let provider: any
 
+const createBytesMsg = (msg: string) => {
+  return ethers.utils.toUtf8Bytes(msg)
+}
+
 const initialize = () => {
   if (ethereum) {
     provider = new ethers.providers.Web3Provider(ethereum)
@@ -29,4 +33,16 @@ const getAddress = async () => {
   }
 }
 
-export { getAddress }
+const signing = async (msg: string) => {
+  if (ethereum) {
+    const _ethereum = ethereum as any
+    const bytesMsg = createBytesMsg(msg)
+    const signature = await _ethereum.request({
+      method: 'personal_sign',
+      params: [_ethereum.selectedAddress, ethers.utils.hexlify(bytesMsg)],
+    })
+    return signature
+  }
+}
+
+export { getAddress, signing }

@@ -2,18 +2,34 @@ import '@/index.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import React, { lazy } from 'react'
+import React, { lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { RecoilRoot } from 'recoil'
 
+import { PATHNAME } from '@/constants/index'
 import reportWebVitals from '@/reportWebVitals'
 
 const Home = lazy(() => import('@/pages/Home'))
+const NFTs = lazy(() => import('@/pages/NFTs'))
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    children: [
+      {
+        path: PATHNAME.HOME,
+        element: <Home />,
+      },
+      {
+        path: PATHNAME.NFTS,
+        element: (
+          <Suspense fallback="Loading">
+            <NFTs />
+          </Suspense>
+        ),
+      },
+    ],
   },
 ])
 
@@ -31,10 +47,12 @@ const queryClient = new QueryClient({
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </RecoilRoot>
   </React.StrictMode>,
 )
 

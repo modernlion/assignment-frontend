@@ -32,9 +32,13 @@ const darkThemeColors = {
 }
 
 module.exports = {
+  mode: 'jit',
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      spacing: {
+        180: '180px',
+      },
       fontFamily: {
         sans: [
           'Pretendard',

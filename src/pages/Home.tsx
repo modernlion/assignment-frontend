@@ -1,14 +1,9 @@
-import { getAddress } from '@/interface/metamask'
+import { LoginFrom } from '@/components/Home'
+
 const Home = () => {
   return (
-    <div>
-      <h1
-        className="font-bold text-lg underline underline-offset-2"
-        onClick={() => {
-          getAddress()
-        }}>
-        Hello, World!
-      </h1>
+    <div className="flex justify-center items-center w-screen h-screen">
+      <LoginFrom />
     </div>
   )
 }
