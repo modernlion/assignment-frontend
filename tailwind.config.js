@@ -38,6 +38,7 @@ module.exports = {
     extend: {
       spacing: {
         180: '180px',
+        336: '336px',
         640: '640px',
       },
       fontFamily: {

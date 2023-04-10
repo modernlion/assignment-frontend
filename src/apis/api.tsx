@@ -13,7 +13,7 @@ const PATH = {
   },
 }
 
-const fetchUserNonce = async (params: { [key: string]: any }) => {
+const fetchUserNonce = async (params: { [key: string]: string | number }) => {
   const rsp = await fetchData({
     domain: `${DOMAIN}/${PATH.users.nonce}`,
     method: 'GET',

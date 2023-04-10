@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+
 const ethereum = window.ethereum
 let provider: any
 
@@ -7,13 +8,13 @@ const isAddress = (address: string) => {
   return isAddress
 }
 
-const createBytesMsg = (msg: string) => {
-  return ethers.utils.toUtf8Bytes(msg)
-}
-
 const convertToFormalAddress = (address: string) => {
   const newAddress = ethers.utils.getAddress(address)
   return newAddress
+}
+
+const createBytesMsg = (msg: string) => {
+  return ethers.utils.toUtf8Bytes(msg)
 }
 
 const checkIsConnected = async () => {
@@ -28,7 +29,7 @@ const checkIsConnected = async () => {
 
 const checkChainId = async () => {
   if (ethereum) {
-    const _ethereum = ethereum as any
+    const _ethereum = window.ethereum as any
     await _ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: '0x5' }],
@@ -92,7 +93,6 @@ const encodeTransferFrom = async (
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, [transferFrom], signer)
     const tx = await contract.transferFrom(await signer.getAddress(), recipientAddress, tokenId)
-    console.log(tx)
     return tx
   }
 }
@@ -100,7 +100,6 @@ const encodeTransferFrom = async (
 const metamaskSendTransaction = async (rawTx: any) => {
   if (ethereum) {
     const _ethereum = ethereum as any
-    console.log('a')
     const txResult = await _ethereum.request({
       method: 'eth_sendTransaction',
       params: [rawTx],

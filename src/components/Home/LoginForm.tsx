@@ -12,11 +12,11 @@ const LoginForm = () => {
   const [userWalletAddr, setUserWalletAddr] = useState<string>('')
   const [isClicked, setIsClicked] = useState<boolean>(false)
 
-  const connectToWallet = async () => {
+  const connectToWallet = useCallback(async () => {
     await checkChainId()
     const address = await getAddress()
     setUserWalletAddr(address)
-  }
+  }, [])
 
   const getNonce = useCallback(async () => {
     const { nonce } = await fetchUserNonce({
@@ -40,18 +40,23 @@ const LoginForm = () => {
   }, [])
 
   const login = useCallback(async () => {
-    if (isClicked) {
-      return
+    try {
+      if (isClicked) {
+        return
+      }
+      setIsClicked(true)
+      // auth token API가 nonce와 signature를 받지 않고 publicAddr과 signature 받는 것 같습니다.
+      const nonce = await getNonce()
+      const signature = await sign(nonce)
+      const authToken = await getAuthToken(userWalletAddr, signature)
+      setLocalStorage('token', authToken)
+      setLocalStorage('loginAddr', convertToFormalAddress(userWalletAddr))
+      navigate(PATHNAME.NFTS)
+      setIsClicked(false)
+    } catch (e) {
+      setIsClicked(false)
+      throw e
     }
-    setIsClicked(true)
-    // auth token API가 nonce와 signature를 받지 않고 publicAddr과 signature 받는 것 같습니다.
-    const nonce = await getNonce()
-    const signature = await sign(nonce)
-    const authToken = await getAuthToken(userWalletAddr, signature)
-    setLocalStorage('token', authToken)
-    setLocalStorage('loginAddr', convertToFormalAddress(userWalletAddr))
-    navigate(PATHNAME.NFTS)
-    setIsClicked(false)
   }, [userWalletAddr, isClicked])
 
   return (

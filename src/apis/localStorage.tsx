@@ -1,4 +1,4 @@
-const setLocalStorage = (key: string, value: any) => {
+const setLocalStorage = (key: string, value: string) => {
   window.localStorage.setItem(key, value)
 }
 

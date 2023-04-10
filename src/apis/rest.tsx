@@ -3,9 +3,13 @@ import { getLocalStorage } from '@/apis/localStorage'
 type RestFulAPIType = {
   domain: string
   method: 'GET' | 'POST'
-  params?: any
+  params?: Params
   auth?: boolean
   delay?: number
+}
+
+type Params = {
+  [key: string]: string | number
 }
 
 const fetchData = async ({
@@ -36,14 +40,11 @@ const fetchData = async ({
   }
   if (auth) {
     const authToken = getLocalStorage('token')
-    console.log(authToken)
     headers = {
       ...headers,
       Authorization: `Bearer ${authToken}`,
     }
   }
-
-  console.log(method, headers)
 
   const rsp = await fetch(`${domain}${qs}`, {
     method,
@@ -69,13 +70,13 @@ const fetchData = async ({
   }
 }
 
-const queryParser = (params: any) => {
+const queryParser = (params: Params) => {
   if (!params) {
     return ''
   }
   let initialValue = '?'
   const keys = Object.keys(params)
-  keys.map((el: any, idx) => {
+  keys.map((el: string, idx) => {
     if (idx === keys.length - 1) {
       initialValue = initialValue + el + '=' + params[el]
       return

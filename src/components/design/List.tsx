@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import img_default from '@/assets/img_default.png'
 import { Item } from '@/constants/types'
 
 interface IListProps {
@@ -9,7 +10,7 @@ interface IListProps {
   selectedItem: Item | any
 }
 
-const List = ({ list, isLoading, onSelect, selectedItem }: IListProps) => {
+const List = ({ list, isLoading, onSelect }: IListProps) => {
   const [isClicked, setIsClicked] = useState<number>(-1)
 
   if (isLoading) {
@@ -25,14 +26,20 @@ const List = ({ list, isLoading, onSelect, selectedItem }: IListProps) => {
           return (
             <div
               key={title + tokenId + idx}
-              className={`w-full h-180 rounded-md overflow-hidden bg-neutral-500 border border-solid border-gray-800 p-2 ${
-                isSelected ? 'border-gray-200' : ''
+              className={`w-full h-180 rounded-md overflow-hidden bg-white border-2 border-solid border-gray-600 p-2 ${
+                isSelected ? 'border-teal-400' : ''
               }`}
               onClick={() => {
                 onSelect(el)
                 setIsClicked(idx)
               }}>
-              <img className="w-20 h-20 rounded-md" src={img} />
+              <img
+                className="w-20 h-20 rounded-md"
+                src={img}
+                onError={({ currentTarget }) => {
+                  currentTarget.src = img_default
+                }}
+              />
               <span className="text-sm">{title}</span>
               <span>{tokenId}</span>
             </div>

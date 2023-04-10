@@ -38,7 +38,7 @@ const NFTs = () => {
   return (
     <div className="flex justify-center items-center w-screen h-screen  bg-white">
       <div className="flex w-640 h-3/5 rounded-md border-black bg-white border-solid border-4 p-4">
-        <div className="w-80 rounded-md bg-neutral-800 overflow-scroll">
+        <div className="w-336 p-4 rounded-md bg-white overflow-scroll border-solid border-black border-2">
           <List
             isLoading={isLoading}
             list={nfts}
