@@ -2,23 +2,37 @@ import { ethers } from 'ethers'
 const ethereum = window.ethereum
 let provider: any
 
+const isAddress = (address: string) => {
+  const isAddress = ethers.utils.isAddress(address)
+  return isAddress
+}
+
 const createBytesMsg = (msg: string) => {
   return ethers.utils.toUtf8Bytes(msg)
 }
 
-const initialize = () => {
-  if (ethereum) {
-    provider = new ethers.providers.Web3Provider(ethereum)
+const convertToFormalAddress = (address: string) => {
+  const newAddress = ethers.utils.getAddress(address)
+  return newAddress
+}
+
+const checkIsConnected = async () => {
+  if (await provider.getNetwork()) {
+    console.log('Successfully connected to MetaMask!')
+    return true
   } else {
-    throw new Error('E1000')
+    console.log('Please connect to MetaMask!')
+    return false
   }
 }
 
-const isConnected = async () => {
-  if (await provider.getNetwork()) {
-    console.log('Successfully connected to MetaMask!')
-  } else {
-    console.log('Please connect to MetaMask!')
+const checkChainId = async () => {
+  if (ethereum) {
+    const _ethereum = ethereum as any
+    await _ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x5' }],
+    })
   }
 }
 
@@ -96,4 +110,13 @@ const metamaskSendTransaction = async (rawTx: any) => {
   }
 }
 
-export { encodeTransferFrom, getAddress, metamaskSendTransaction, signing }
+export {
+  checkChainId,
+  checkIsConnected,
+  convertToFormalAddress,
+  encodeTransferFrom,
+  getAddress,
+  isAddress,
+  metamaskSendTransaction,
+  signing,
+}

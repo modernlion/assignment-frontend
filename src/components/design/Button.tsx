@@ -19,7 +19,7 @@ const buttonHeight = (size: string) => {
 }
 
 const buttonThemeCSS = (theme: string) => {
-  if (theme === 'Filled') return ' bg-bgQuarternary hover:bg-bgButtonHover '
+  if (theme === 'Filled') return ' bg-neutral-800 hover:bg-black '
   else if (theme === 'Outlined') return ' border border-twPaletteGray400 hover:bg-bgOutlineHover '
   else if (theme === 'Accent') return ' bg-bgAccent '
 }

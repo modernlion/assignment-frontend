@@ -4,13 +4,16 @@ import { useNavigate } from 'react-router-dom'
 import { fetchAuthToken, fetchUserNonce } from '@/apis/api'
 import { setLocalStorage } from '@/apis/localStorage'
 import { Button } from '@/components/design'
-import { getAddress, signing } from '@/interface/metamask'
+import { PATHNAME } from '@/constants/index'
+import { checkChainId, convertToFormalAddress, getAddress, signing } from '@/interface/metamask'
 
 const LoginForm = () => {
   const navigate = useNavigate()
   const [userWalletAddr, setUserWalletAddr] = useState<string>('')
+  const [isClicked, setIsClicked] = useState<boolean>(false)
 
   const connectToWallet = async () => {
+    await checkChainId()
     const address = await getAddress()
     setUserWalletAddr(address)
   }
@@ -37,20 +40,25 @@ const LoginForm = () => {
   }, [])
 
   const login = useCallback(async () => {
+    if (isClicked) {
+      return
+    }
+    setIsClicked(true)
     // auth token API가 nonce와 signature를 받지 않고 publicAddr과 signature 받는 것 같습니다.
     const nonce = await getNonce()
     const signature = await sign(nonce)
     const authToken = await getAuthToken(userWalletAddr, signature)
-    console.log(authToken)
     setLocalStorage('token', authToken)
-    // navigate(PATHNAME.NFTS)
-  }, [userWalletAddr])
+    setLocalStorage('loginAddr', convertToFormalAddress(userWalletAddr))
+    navigate(PATHNAME.NFTS)
+    setIsClicked(false)
+  }, [userWalletAddr, isClicked])
 
   return (
-    <div className="block w-2/4 h-3/5 p-4 rounded-md border-bgQuarternary bg-gray-600 border border-solid">
+    <div className="block w-640 h-3/5 p-4 rounded-md border-black bg-white border-4 border-solid">
       <div className="flex flex-col w-full h-full justify-between">
         <div className="w-full">
-          <div className="w-full h-12 border-b-2 border-solid border-gray-300 pb-2 mb-4">
+          <div className="w-full h-12 border-b-2 text-black border-solid border-black pb-2 mb-4">
             {userWalletAddr}
           </div>
           <Button
@@ -61,7 +69,12 @@ const LoginForm = () => {
             onClick={connectToWallet}
           />
         </div>
-        <Button className="w-full h-10" text="Login" size="sm" onClick={() => login()} />
+        <Button
+          className="w-full h-10"
+          text={isClicked ? 'Loading' : 'Login'}
+          size="sm"
+          onClick={() => login()}
+        />
       </div>
     </div>
   )

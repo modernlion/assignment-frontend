@@ -25,15 +25,15 @@ const List = ({ list, isLoading, onSelect, selectedItem }: IListProps) => {
           return (
             <div
               key={title + tokenId + idx}
-              className={`w-full h-180 rounded-md overflow-hidden border border-solid ${
-                isSelected ? 'border-gray-800' : ''
+              className={`w-full h-180 rounded-md overflow-hidden bg-neutral-500 border border-solid border-gray-800 p-2 ${
+                isSelected ? 'border-gray-200' : ''
               }`}
               onClick={() => {
                 onSelect(el)
                 setIsClicked(idx)
               }}>
-              <img className="w-full h-auto" src={img} />
-              <span>{title}</span>
+              <img className="w-20 h-20 rounded-md" src={img} />
+              <span className="text-sm">{title}</span>
               <span>{tokenId}</span>
             </div>
           )
