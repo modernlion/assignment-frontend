@@ -6,8 +6,8 @@
 
 ## 주의사항
 
-- 꼭 mainnet이 아닌 goerli 테스트넷을 사용하여 구현해주세요.
-- goerli 테스트넷 account에 소유한 NFT가 없어서 어려움이 있으시다면, 메일로 계정의 publicAddress(비밀키는 절대 공유되어서는 안됩니다)를 보내주세요. 테스트에 사용할 수 있는 NFT를 airdrop 해드립니다.
+- 꼭 mainnet이 아닌 sepolia 테스트넷을 사용하여 구현해주세요.
+- sepolia 테스트넷 account에 소유한 NFT가 없어서 어려움이 있으시다면, 메일로 계정의 publicAddress(비밀키는 절대 공유되어서는 안됩니다)를 보내주세요. 테스트에 사용할 수 있는 NFT를 airdrop 해드립니다.
 
 ## 과제 시나리오
 
@@ -54,3 +54,6 @@
 - Tailwind CSS
 - React-Router v6
 - React-Query v4
+
+## 제출
+- hhryu@modernlion.io로 압축후 메일로 제출
