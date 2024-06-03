@@ -32,7 +32,7 @@
 
 ### API
 
-- base url: `https://lrvalrdo8k.execute-api.us-east-1.amazonaws.com/Prod`
+- base url: `https://pzuub5vu49.execute-api.us-east-1.amazonaws.com/Prod`
 - getNonce API: `GET /users/nonce`
   - query parameter: `publicAddress`
 - getToken API: `POST /auth/token`
