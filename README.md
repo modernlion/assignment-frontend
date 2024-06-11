@@ -56,4 +56,5 @@
 - React-Query v4
 
 ## 제출
-- hhryu@modernlion.io로 압축후 메일로 제출
+- github public repository로 개발 후 아래 이메일로 링크 제출
+- hhryu@modernlion.io
